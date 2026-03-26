@@ -1,0 +1,31 @@
+{
+    "simples": "Olá Mundo",
+
+    "aluno":{
+        "nome": "Leticia",
+        "idade": "17",
+        "curos": "Desenvolvimento de Sistema"
+    },
+
+    "listadeAlunos":[
+        {"nome": "Leticia", "idade":17},
+        {"nome": "Isadora", "idade":17}
+    ],
+
+    "objetoDentroObjeto":{
+        "nome": "Marcos",
+        "curso":{
+            "nome":"Desenvolvimentos de sistema",
+            "periodo": "Noturno"
+        }
+    },
+
+    "listadeObjetos":{
+        "turma": "3ºB DS",
+        "alunos":[
+            {"nome": "Leticia", "idade": 17},
+            {"nome": "Marcos", "idade": 17},
+            {"nome": "Isadora", "idade": 17}
+        ]
+    }
+}

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de IMC</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        header {
+            background: #007BFF;
+            color: white;
+            padding: 10px 0;
+            text-align: center;
+        }
+        .container {
+            width: 80%;
+            margin: 20px auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        button {
+            padding: 10px 15px;
+            background: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #218838;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Calcule Seu IMC</h1>
+    </header>
+    <div class="container">
+        <h2>Descubra sua Saúde em Apenas Alguns Cliques!</h2>
+        <form id="imcForm">
+            <label>Peso (kg):</label>
+            <input type="number" id="peso" required>
+            <label>Altura (m):</label>
+            <input type="number" id="altura" required step="0.01">
+            <button type="submit">Calcular IMC</button>
+        </form>
+        <div id="resultado" style="margin-top: 20px;"></div>
+    </div>
+    <script>
+        document.getElementById('imcForm').onsubmit = function(event) {
+            event.preventDefault();
+            const peso = parseFloat(document.getElementById('peso').value);
+            const altura = parseFloat(document.getElementById('altura').value);
+            const imc = (peso / (altura * altura)).toFixed(2);
+            let classificacao;
+            let recomendacao = '';
+
+            if (imc < 18.5) {
+                classificacao = 'Abaixo do peso';
+                recomendacao = 'Recomenda-se uma dieta hipocalórica e suplementos como whey.';
+            } else if (imc < 24.9) {
+                classificacao = 'Peso normal';
+                recomendacao = 'Mantenha uma dieta equilibrada e considere whey para recuperação.';
+            } else if (imc < 29.9) {
+                classificacao = 'Sobrepeso';
+                recomendacao = 'Considere uma dieta balanceada e suplementos como creatina.';
+            } else {
+                classificacao = 'Obesidade';
+                recomendacao = 'Consulte um nutricionista para um plano apropriado.';
+            }
+
+            document.getElementById('resultado').innerHTML = `IMC: ${imc} (${classificacao}). ${recomendacao}`;
+        };
+    </script>
+</body>
+</html>

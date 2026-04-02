@@ -6,7 +6,7 @@ function Detalhes(){
     return(
     <div>
         <h1>Mais informações</h1>
-        <button onClick={() => navigate('/contato')}>Sobre</button>
+        <button onClick={() => navigate('/contato')}>Contato</button>
       
     </div>
   )

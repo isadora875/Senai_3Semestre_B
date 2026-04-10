@@ -61,24 +61,24 @@ router.put('/categorias/:id_categoria', async(req, res) =>{
         const valores = [nome, email, senhaCriptografada,tipo_acesso, id_usuario];
         await BD.query(comando, valores);
 
-        return res.status(200).json('Usuario foi atualizado!');
+        return res.status(200).json('Categoria foi atualizado!');
     }catch(error){
-        console.error('Erro ao atualizar usuários', error.message);
-        return  res.status(500).json({error: 'Erro ao atualizar usuarios'})
+        console.error('Erro ao atualizar usuarios', error.message);
+        return  res.status(500).json({error: 'Erro ao atualizar categorias'})
     }
 })
 
 //Rota patch atualizando parcialmente as informações
-router.patch('/usuarios/:id_usuario', async(req,res) =>{
-    const { id_usuario } = req.params;
-    const {nome, email, senha} = req.body;
+router.patch('/categorias/:id_categoria', async(req,res) =>{
+    const { id_categoria } = req.params;
+    const {nome, descricao, cor, icone, tipo} = req.body;
 
     try{
          //Verificar se o usuario existe
-        const verificarUsuario = await BD.query(`SELECT * FROM USUARIOS
-            WHERE id_usuario = $1`, [id_usuario])
-        if(verificarUsuario.rows.length === 0){
-            return res.status(404).json({message: 'Usuario não encontrado'})
+        const verificarCategoria = await BD.query(`SELECT * FROM categorias
+            WHERE id_categoria = $1`, [id_categoria])
+        if(verificarCategoria.rows.length === 0){
+            return res.status(404).json({message: 'categoria não encontrado'})
         }
 
         //Montar o update dinamicamente(apenas campos enviados)
@@ -91,14 +91,24 @@ router.patch('/usuarios/:id_usuario', async(req,res) =>{
             valores.push(nome);
             contador++;
         }
-        if(email !== undefined){
-            campos.push(`email = $${contador}`);
-            valores.push(email);
+        if(descricao !== undefined){
+            campos.push(`descricao = $${contador}`);
+            valores.push(descricao);
             contador++;
         }
-        if(senha !== undefined){
-            campos.push(`senha = $${contador}`);
-            valores.push(senha);
+        if(cor !== undefined){
+            campos.push(`cor = $${contador}`);
+            valores.push(cor);
+            contador++;
+        }
+        if(icone !== undefined){
+            campos.push(`icone = $${contador}`);
+            valores.push(icone);
+            contador++;
+        }
+        if(tipo !== undefined){
+            campos.push(`tipo = $${contador}`);
+            valores.push(tipo);
             contador++;
         }
 
@@ -108,68 +118,30 @@ router.patch('/usuarios/:id_usuario', async(req,res) =>{
         }
 
         //Adicionando ID ao final de valores
-        valores.push(id_usuario)
+        valores.push(id_categoria);
         
         //montando a query dinamicamente
-        const comando = `UPDATE USUARIOS SET ${campos.join(', ')} WHERE id_usuario = $${contador}`
+        const comando = `UPDATE CATEGORIAS SET ${campos.join(', ')} WHERE id_categoria = $${contador}`
         await BD.query(comando, valores)
 
-        return res.status(200).json('Usuário atualizado com sucesso');
+        return res.status(200).json('Categoria atualizado com sucesso');
     }catch(error){
-        console.error('Erro ao atualizar usuario', error.message)
+        console.error('Erro ao atualizar categoria', error.message)
         return res.status(500).json({message: "Erro interno so servidor" + error.message})
     }
 })
 
-router.delete('/usuarios/:id_usuario', async(req, res) =>{
-    const {id_usuario} = req.params;
+router.delete('/categorias/:id_categoria', async(req, res) =>{
+    const {id_categoria} = req.params;
     try{
         //Executa o comando de delete
         // const comando = `DELETE FROM USUARIOS WHERE id_usuario = $1`
-        const comando = `UPDATE USUARIOS SET ativo = false WHERE id_usuario = $1 `
-        await BD.query(comando, [id_usuario])
-        return res.status(200).json({message: "Usuario removido com sucesso"})
+        const comando = `UPDATE CATEGORIAS SET ativo = false WHERE id_categoria = $1 `
+        await BD.query(comando, [id_categoria])
+        return res.status(200).json({message: "Categoria removido com sucesso"})
     }catch(error){
-        console.error('Erro ao atualizar usuario', error.message)
+        console.error('Erro ao atualizar categoria', error.message)
         return res.status(500).json({message: "Erro interno so servidor" + error.message})
-    }
-})
-
-//Endpoint de Login
-router.post('/login', async(req, res) =>{
-    const {email, senha} = req.body;
-
-    //Validação de entrada
-    if(!email || !senha){
-        return res.status(400).json({message: 'Email e senha são obrigatórios'})
-    }
-    try{
-        //Buscar usuario pelo email
-        const comando = 'SELECT id_usuario, nome, email, senha FROM USUARIOS WHERE email = $1 and ativo = true'
-        const resultado = await BD.query(comando, [email]);
-
-        if(resultado.rows.length === 0) {
-            return res.status(401).json({message: 'Email nao encontrado.'})
-        }
-
-        const usuario = resultado.rows[0]
-        const senhaCorreta = await bcrypt.compare(senha,usuario.senha)
-
-        //Verifica senha se são iguais
-        if(!senhaCorreta){
-            return res.status(401).json({message: 'Senha inválida.'})
-        }
-        return res.status(200).json({
-            message: 'Login realizado com sucesso',
-            usuario: {
-                id_usuario: usuario.id_usuario,
-                nome: usuario.nome,
-                email: usuario.email
-            }
-        })
-    }catch(error){
-        console.error('Erro ao atualizar usuario', error.message)
-        return res.status(500).json({message: "Erro interno do servidor" + error.message})
     }
 })
 
